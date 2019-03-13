@@ -8,7 +8,7 @@ minetest.register_craftitem("floodfill:bucket", {
 	inventory_image = "bucket.png^[colorize:gold:80",
 	stack_max = 1,
 	liquids_pointable = true,
-	on_use = function(itemstack, user, pointed_thing)
+	on_use = function(itemstack, player, pointed_thing)
 		
 		if pointed_thing.type ~= "node" then
 			return
@@ -22,10 +22,11 @@ minetest.register_craftitem("floodfill:bucket", {
 		
 		local radius = 10
 		local visited = {}
+		local stack = { opos }
 		
 		while #stack > 0 do
 			-- pop this node
-			local cpos = table.remove()
+			local cpos = table.remove(stack)
 			local chash = minetest.hash_node_position(cpos)
 			if visited[chash] == nil then
 				visited[chash] = 1
@@ -37,10 +38,10 @@ minetest.register_craftitem("floodfill:bucket", {
 				
 					
 					if math.abs(opos.x - cpos.x) < radius and math.abs(opos.z - cpos.z) < radius then
-						table.insert(stack, {x=cpos.x + 1, y=cpos.y, z=cpos.z + 1})
-						table.insert(stack, {x=cpos.x + 1, y=cpos.y, z=cpos.z - 1})
-						table.insert(stack, {x=cpos.x - 1, y=cpos.y, z=cpos.z + 1})
-						table.insert(stack, {x=cpos.x - 1, y=cpos.y, z=cpos.z - 1})
+						table.insert(stack, {x=cpos.x + 1, y=cpos.y, z=cpos.z})
+						table.insert(stack, {x=cpos.x - 1, y=cpos.y, z=cpos.z})
+						table.insert(stack, {x=cpos.x, y=cpos.y, z=cpos.z + 1})
+						table.insert(stack, {x=cpos.x, y=cpos.y, z=cpos.z - 1})
 					end
 				end
 			end
